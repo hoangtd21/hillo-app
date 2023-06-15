@@ -1,14 +1,17 @@
 FROM node:18-alpine AS hilloapp
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
-COPY package*.json ./
+COPY package.json .
 
-RUN npm install && npm install react-scripts@5.0.1 -g --silent
+COPY package-lock.json .
+RUN npm install
+# Copy app files
 
-COPY . ./
+COPY . .
 
-RUN npm run build
+# Expose port
+EXPOSE 5173
 
-FROM nginx:latest
-COPY --from=hilloapp /usr/src/app/dist /usr/share/nginx/html
+# Start the app
+CMD [ "npm run", "dev" ]
